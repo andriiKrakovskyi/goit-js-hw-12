@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Search</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <form class="form" id="myForm">
+        <label for="datesearch__input" class="visually__hidden"
+          >Search images</label
+        >
+        <input
+          class="input__search"
+          type="text"
+          id="data_input"
+          placeholder="Search images..."
+          aria-label="Search images"
+        />
+        <button
+          class="button__search"
+          type="submit"
+          data-search
+          aria-label="Submit search"
+        >
+          Search
+        </button>
+      </form>
+    </header>
+    <main>
+      <div id="loader" class="hidden hidden__css"></div>
+      <div id="gallery" class="gallery__wrap"></div>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
