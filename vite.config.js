@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
 import { glob } from 'glob';
+import dotenv from 'dotenv';
+dotenv.config();
 import injectHTML from 'vite-plugin-html-inject';
 import FullReload from 'vite-plugin-full-reload';
 import SortCss from 'postcss-sort-media-queries';
@@ -8,6 +10,7 @@ export default defineConfig(({ command }) => {
   return {
     define: {
       [command === 'serve' ? 'global' : '_global']: {},
+      'process.env': process.env,
     },
     root: 'src',
     build: {
