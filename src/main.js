@@ -45,7 +45,6 @@ async function onFormSubmit(event) {
   try {
     showLoader();
     const posts = await fetchImages(page, searchWord);
-
     validateApiResponse(posts, posts.hits);
     const hits = posts.hits;
     checkHitsAndShowError(hits);
@@ -62,6 +61,7 @@ async function onFormSubmit(event) {
   } catch (error) {
     showError(error.message);
     hideEndMessage();
+    hideLoadMoreButton();
   } finally {
     event.target.reset();
     hideLoader();
@@ -95,6 +95,8 @@ async function handleClick() {
     page++;
   } catch (error) {
     showError(error.message);
+    hideEndMessage();
+    hideLoadMoreButton();
   } finally {
     loadMoreBtn.disabled = false;
   }
