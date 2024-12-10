@@ -23,7 +23,7 @@ formSearch.addEventListener('submit', onFormSubmit);
 loadMoreBtn.addEventListener('click', handleClick);
 
 let page = 0;
-let per_page = 150;
+let per_page = 15;
 let totalImages = 0;
 let totalPages;
 let searchWord = '';
