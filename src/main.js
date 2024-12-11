@@ -12,6 +12,7 @@ const formSearch = document.querySelector('#myForm');
 const gallery = document.querySelector('#gallery');
 const loadMoreBtn = document.querySelector('#buttonLoadMore');
 const showTheEnd = document.querySelector('.show__the__end');
+const buttonSearch = document.querySelector('.button__search');
 
 let lightbox = new SimpleLightbox('.gallery__link', {
   captionsData: 'alt',
@@ -25,15 +26,17 @@ loadMoreBtn.addEventListener('click', handleClick);
 let page = 0;
 let per_page = 15;
 let totalImages = 0;
-let totalPages;
+let totalPages = 0;
 let searchWord = '';
 let cardHeight;
 
 async function onFormSubmit(event) {
   event.preventDefault();
   gallery.innerHTML = '';
-  page = 1;
   searchWord = event.target.elements.data_input.value.trim();
+  page = 1;
+  totalPages = 0;
+  hideEndMessage();
 
   if (searchWord.length === 0) {
     hideEndMessage();
@@ -43,19 +46,27 @@ async function onFormSubmit(event) {
   }
 
   try {
+    buttonSearch.disabled = true;
     showLoader();
     const posts = await fetchImages(page, searchWord);
     validateApiResponse(posts, posts.hits);
     const hits = posts.hits;
-    checkHitsAndShowError(hits);
+
+    checkHitsAndShowError(posts);
+
     totalImages = posts.totalHits;
     totalPages = Math.ceil(totalImages / per_page);
+
     page++;
 
     renderGallery(hits);
-    cardHeight = gallery.firstElementChild.getBoundingClientRect().height;
+    buttonSearch.disabled = false;
 
-    if (page <= totalPages) {
+    if (gallery.firstElementChild) {
+      cardHeight = gallery.firstElementChild.getBoundingClientRect().height;
+    }
+
+    if (totalPages > 1) {
       showLoadMoreButton();
     }
   } catch (error) {
@@ -69,13 +80,6 @@ async function onFormSubmit(event) {
 }
 
 async function handleClick() {
-  console.log('totalPages', totalPages - page);
-  if (totalPages <= page) {
-    hideLoadMoreButton();
-    showEndMessage();
-    return;
-  }
-
   hideLoadMoreButton();
   loadMoreBtn.disabled = true;
 
@@ -83,7 +87,7 @@ async function handleClick() {
     show();
     const posts = await fetchImages(page, searchWord);
 
-    checkHitsAndShowError(posts.hits);
+    checkHitsAndShowError(posts);
     hide();
     renderGallery(posts.hits);
 
@@ -91,21 +95,35 @@ async function handleClick() {
       top: cardHeight * 2,
       behavior: 'smooth',
     });
+
     showLoadMoreButton();
     page++;
+
+    if (page > totalPages) {
+      hideLoadMoreButton();
+      showEndMessage();
+      return;
+    }
   } catch (error) {
     showError(error.message);
     hideEndMessage();
     hideLoadMoreButton();
+    hide();
   } finally {
     loadMoreBtn.disabled = false;
   }
 }
 
-function checkHitsAndShowError(hits) {
-  if (hits.length === 0) {
+function checkHitsAndShowError(response) {
+  const { hits, totalHits } = response;
+  if (totalHits === 0) {
     throw new Error(
       'Sorry, there are no images matching your search query. Please, try again!'
+    );
+  }
+  if (!hits || hits.length === 0) {
+    throw new Error(
+      'Unexpected error: No results found in the current page of data!'
     );
   }
 }
