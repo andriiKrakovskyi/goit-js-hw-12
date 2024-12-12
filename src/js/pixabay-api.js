@@ -14,6 +14,6 @@ export async function fetchImages(page = 1, searchWord) {
       page,
     },
   });
-
+  console.log(data);
   return data;
 }

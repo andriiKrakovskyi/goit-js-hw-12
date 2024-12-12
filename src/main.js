@@ -66,6 +66,10 @@ async function onFormSubmit(event) {
       cardHeight = gallery.firstElementChild.getBoundingClientRect().height;
     }
 
+    if (totalImages < per_page) {
+      hideLoadMoreButton();
+    }
+
     if (totalPages > 1) {
       showLoadMoreButton();
     }
@@ -73,6 +77,7 @@ async function onFormSubmit(event) {
     showError(error.message);
     hideEndMessage();
     hideLoadMoreButton();
+    buttonSearch.disabled = false;
   } finally {
     event.target.reset();
     hideLoader();
